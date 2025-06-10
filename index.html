@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>தமிழ்நாடு நீர் மேலாண்மை டாஷ்போர்டு</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Universal Box-Sizing and Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling: Full height, vibrant gradient background, no centering */
+        body {
+            font-family: 'Hind Madurai', sans-serif; /* Changed font to Hind Madurai for Tamil */
+            background: linear-gradient(135deg, #89F7FE 0%, #66A6FF 100%); /* New vibrant blue gradient */
+            height: 100vh; /* Take full viewport height */
+            width: 100vw; /* Take full viewport width */
+            padding: 0; /* Remove body padding to allow container to stretch to edges */
+            overflow: hidden; /* Prevent body scroll */
+            display: flex; /* Use flexbox to manage container */
+        }
+
+        /* Dashboard Container: Main content wrapper with glassmorphism effect */
+        .dashboard-container {
+            width: 100%; /* Take full available width */
+            height: 100%; /* Take full available height */
+            background: rgba(255, 255, 255, 0.9); /* Slightly less opaque white for more background show-through */
+            border-radius: 0; /* Removed border-radius to fill corners */
+            box-shadow: none; /* Removed shadow as it's now full screen */
+            backdrop-filter: blur(15px); /* Stronger blur effect */
+            padding: 20px; /* Padding inside the container for content spacing */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Keep content within container */
+        }
+
+        /* Header Section: Top banner with state name and title */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            padding: 5px 20px;
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
+            flex-shrink: 0;
+        }
+
+        .header-logo {
+            height: 80px;
+            width: 80px;
+            object-fit: contain;
+            border-radius: 50%; /* Make logo circular */
+        }
+
+        .header-text-container {
+            flex-grow: 1;
+            padding: 0 15px;
+        }
+
+        /* State Name: Large, bold text with glow animation */
+        .state-name {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            animation: glow 2.5s ease-in-out infinite alternate;
+        }
+
+        /* Keyframe animation for text glow */
+        @keyframes glow {
+            from { text-shadow: 2px 2px 6px rgba(0,0,0,0.4), 0 0 25px rgba(255,255,255,0.6); }
+            to { text-shadow: 2px 2px 6px rgba(0,0,0,0.4), 0 0 40px rgba(255,255,255,0.9); }
+        }
+
+        /* Main Title: Dashboard primary title */
+        .main-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* Subtitle: Descriptive text below main title */
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.95;
+            font-style: italic;
+        }
+
+        /* Applications Grid: Layout for app cards */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Explicitly 3 columns for desktop */
+            gap: 15px; /* Reduced gap between cards */
+            flex: 1; /* Allow grid to take available space */
+            overflow-y: auto; /* Enable vertical scrolling for cards */
+            padding-right: 5px; /* Padding for scrollbar */
+            align-items: stretch;
+            justify-items: stretch;
+        }
+
+        /* App Card: Individual application display card */
+        .app-card {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-left: 7px solid;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+            height: 100%;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15));
+            border-radius: 50%;
+            transform: translate(40%, -40%);
+            z-index: 0;
+        }
+
+        .app-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
+        }
+
+        .priority-1 { border-left-color: #ff7e5f; background: linear-gradient(135deg, #fffafa 0%, #ffe7e0 100%); }
+        .priority-2 { border-left-color: #66A6FF; background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%); }
+        .priority-3 { border-left-color: #00c6ff; background: linear-gradient(135deg, #e0f7fa 0%, #c2f2f7 100%); }
+        .priority-4 { border-left-color: #26de81; background: linear-gradient(135deg, #f0fff0 0%, #e6ffe6 100%); }
+        .priority-5 { border-left-color: #feca57; background: linear-gradient(135deg, #fffbf0 0%, #fff4e6 100%); }
+        .priority-6 { border-left-color: #ff6348; background: linear-gradient(135deg, #fff8f0 0%, #ffede6 100%); }
+        .priority-7 { border-left-color: #1dd1a1; background: linear-gradient(135deg, #f0fff8 0%, #e6ffef 100%); }
+        .priority-9 { border-left-color: #78e08f; background: linear-gradient(135deg, #f5fff5 0%, #ebffeb 100%); }
+
+        .category-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 25px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-basin { background: linear-gradient(45deg, #66A6FF, #89F7FE); }
+        .badge-hydro { background: linear-gradient(45deg, #00c6ff, #0072ff); }
+        .badge-water { background: linear-gradient(45deg, #feca57, #ff9f43); }
+        .badge-ground { background: linear-gradient(45deg, #26de81, #20bf6b); }
+        .badge-decision { background: linear-gradient(45deg, #ff7e5f, #feb47b); }
+        .badge-soil { background: linear-gradient(45deg, #ff6348, #ff4757); }
+        .badge-storage { background: linear-gradient(45deg, #1dd1a1, #10ac84); }
+        .badge-agri { background: linear-gradient(45deg, #78e08f, #38ada9); }
+
+        .app-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            line-height: 1.3; /* Adjusted for Tamil font */
+        }
+
+        .app-description {
+            font-size: 15px;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .app-details {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            line-height: 1.5; /* Adjusted for Tamil font */
+            flex-grow: 1;
+        }
+
+        .launch-btn {
+            background: linear-gradient(45deg, #007bff, #00c6ff);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 7px 18px rgba(0, 123, 255, 0.6);
+        }
+
+        @media (max-width: 1200px) {
+            .apps-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .state-name { font-size: 30px; }
+            .main-title { font-size: 20px; }
+            .subtitle { font-size: 15px; }
+            .app-card { min-height: 190px; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 12px; }
+            .apps-grid { grid-template-columns: 1fr; gap: 12px; }
+            .header {
+                padding: 8px 10px;
+                justify-content: center;
+                gap: 15px;
+            }
+            .header-logo {
+                height: 60px;
+                width: 60px;
+            }
+            .state-name {
+                font-size: 18px;
+                letter-spacing: 1.5px;
+            }
+            .main-title {
+                font-size: 14px;
+            }
+            .app-card { padding: 12px; min-height: unset; }
+            .app-name { font-size: 16px; }
+            .app-description { font-size: 13px; }
+            .app-details { font-size: 12px; margin-bottom: 10px; }
+            .launch-btn { font-size: 12px; padding: 8px 16px; }
+            .category-badge { font-size: 10px; padding: 4px 8px; }
+        }
+         @media (max-width: 480px) {
+            .header-text-container {
+                padding: 0 5px;
+            }
+            .state-name {
+                font-size: 14px;
+            }
+            .main-title {
+                font-size: 12px;
+            }
+            .header-logo {
+                height: 50px;
+                width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+             <img src="https://drive.google.com/thumbnail?id=1qzdyY_F5v86LbRzY4SLWc4O_msttP5uw" alt="Logo" class="header-logo">
+             <div class="header-text-container">
+                <div class="state-name">நீர்வளம் அறிவோம் நீர் மேலாண்மை செய்வோம்</div>
+                <div class="main-title">தமிழ்நாடு ஒருங்கிணைந்த நீர் ஆதாரம் செயலி</div>
+            </div>
+            <img src="https://drive.google.com/thumbnail?id=1qzdyY_F5v86LbRzY4SLWc4O_msttP5uw" alt="Logo" class="header-logo">
+        </div>
+
+        <div class="apps-grid">
+            <!-- 1. Basin Rainfall and Runoff Analysis -->
+            <div class="app-card priority-1">
+                <div class="category-badge badge-basin">படுகை பகுப்பாய்வு</div>
+                <div class="app-name">🌊 வடிநில மழை அளவீடு</div>
+                <div class="app-description">நீரியல் மதிப்பீட்டு அமைப்பு</div>
+                <div class="app-details">தமிழ்நாடு ஆற்றுப் படுகைகளில் மழைப்பொழிவு மற்றும் ஓட்ட இயக்கவியல் பற்றிய விரிவான பகுப்பாய்வு.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/tnriver-basins" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+
+            <!-- 2. Advanced Runoff Flow Modeling -->
+            <div class="app-card priority-2">
+                <div class="category-badge badge-hydro">நீரியல் மாடலிங்</div>
+                <div class="app-name">⚡மேற்பரப்பு நீரோட்ட அளவீடு</div>
+                <div class="app-description">நீரோடை கணிப்பு மற்றும் வழிகாட்டி அமைப்பு</div>
+                <div class="app-details">வெள்ள முன்னறிவிப்பு மற்றும் நீர் ஓட்ட மேலாண்மைக்கான நுட்பமான நீரியல் வழிகாட்டுதல்.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/runoff-routing-app" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+            <!-- 3. Groundwater Recharge Assessment -->
+            <div class="app-card priority-4">
+                <div class="category-badge badge-ground">நிலத்தடி நீர் மேலாண்மை</div>
+                <div class="app-name">💧 நிலத்தடி நீர் செறிவூட்டல் மதிப்பீடு</div>
+                <div class="app-description">நீர்த்தேக்க மேலாண்மை மற்றும் கண்காணிப்பு</div>
+                <div class="app-details">மேம்பட்ட நிலத்தடி நீர் செறிவூட்டல் மதிப்பீடு மற்றும் நிலையான நீர்த்தேக்க மேலாண்மை உத்திகள்.</div>
+                <a href="https://find-mobile-locater.projects.earthengine.app/view/groundwater-recharge" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+              <!-- 4. Water Storage Volume Calculator -->
+            <div class="app-card priority-7">
+                <div class="category-badge badge-storage">சேமிப்பு மேலாண்மை</div>
+                <div class="app-name">🏗️ நீர் ஆதாரங்களில் இருப்பு அளவீடு </div>
+                <div class="app-description">நீர்த்தேக்க கொள்ளளவு மதிப்பீட்டுக் கருவி</div>
+                <div class="app-details">நீர்த்தேக்கங்கள் மற்றும் நீர்நிலைகள் மேலாண்மைக்கான துல்லியமான நீர் சேமிப்பு அளவு மதிப்பீடு.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/water-storage-estimation" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+             <!-- 5. Water Balance Decision Support System -->
+            <div class="app-card priority-5">
+                <div class="category-badge badge-decision">முடிவு ஆதரவு</div>
+                <div class="app-name">🎯 நீர் பகுப்பு கணக்கீடு</div>
+                <div class="app-description">விரிவான நீர் வள திட்டமிடல் கருவி</div>
+                <div class="app-details">அனைத்து மாவட்டங்களிலும் நிலையான மேலாண்மைக்கான மூலோபாய நீர் சமநிலை மதிப்பீடு மற்றும் வள ஒதுக்கீடு.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/dss-water-balance-recent-updated" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+
+                             
+            <!-- 7. Soil Erosion Risk Assessment -->
+            <div class="app-card priority-6">
+                <div class="category-badge badge-soil">மண் பாதுகாப்பு</div>
+                <div class="app-name">🏔️ மண் அரிமானம் கணக்கீடு</div>
+                <div class="app-description">மாவட்ட அளவிலான அரிப்பு கண்காணிப்பு</div>
+                <div class="app-details">மண் அரிப்பு வடிவங்கள் மற்றும் பாதுகாப்பு திட்டமிடல் பற்றிய விரிவான இடஞ்சார்ந்த பகுப்பாய்வு.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/soil-erosion-estimation" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+
+            <!-- 8. Evapotranspiration Analysis System -->
+            <div class="app-card priority-3">
+                <div class="category-badge badge-water">நீர் இழப்பு பகுப்பாய்வு</div>
+                <div class="app-name">☀️ பயிர் நீர் ஆவியாதல்</div>
+                <div class="app-description">நீர் இழப்பு மதிப்பீட்டுக் கருவி</div>
+                <div class="app-details">திறமையான நீர் வள மேம்பாட்டிற்கான துல்லியமான ஆவியுயிர்ப்பு மாடலிங்.</div>
+                <a href="https://find-mobile-locater.projects.earthengine.app/view/ret" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+
+            
+
+            <!-- 9. Crop Water Requirement System -->
+            <div class="app-card priority-9">
+                <div class="category-badge badge-agri">வேளாண்மை மேலாண்மை</div>
+                <div class="app-name">🌾 பயிர் நீர் தேவை அளவீடு</div>
+                <div class="app-description">வேளாண் நீர் மேலாண்மைக் கருவி</div>
+                <div class="app-details">உகந்த விவசாய நீர் பயன்பாட்டிற்கான துல்லியமான நீர்ப்பாசன திட்டமிடல் மற்றும் பயிர் நீர் தேவை பகுப்பாய்வு.</div>
+                <a href="https://inner-domain-428114-g6.projects.earthengine.app/view/crop-water-updated" target="_blank" class="launch-btn">🚀 செயலியைத் துவக்கு</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
